@@ -104,6 +104,33 @@ ul.list{list-style:none; margin:0; padding:0}
 .badge.plan{background:#fff; color:var(--aichi); border:2px solid var(--aichi)}
 .badge.before{background:#fff; color:var(--sub); border:2px solid #A9AFB8}
 
+/* このカードへのリンクをコピーするボタン */
+.copy{
+  border:none; background:transparent; cursor:pointer;
+  font-size:19px; line-height:1; padding:6px 9px; border-radius:7px;
+  color:var(--sub); flex:none;
+}
+.copy:hover{background:rgba(0,0,0,.07)}
+.copy:active{transform:scale(.94)}
+
+/* リンクで開いたカードを光らせる */
+.ev.flash{
+  outline:4px solid #F2A93B; outline-offset:3px;
+  animation:flash 2.6s ease-out;
+}
+@keyframes flash{
+  0%,20%{outline-color:#F2A93B}
+  100%{outline-color:rgba(242,169,59,0)}
+}
+
+/* コピーしたときの小さな通知 */
+#toast{
+  position:fixed; left:50%; bottom:28px; transform:translateX(-50%);
+  background:var(--ink); color:#fff; padding:13px 22px; border-radius:9px;
+  font-size:16px; opacity:0; transition:opacity .25s; pointer-events:none; z-index:200;
+}
+#toast.show{opacity:1}
+
 .name{font-size:22px; font-weight:700; margin:0 0 12px; line-height:1.55}
 
 dl.meta{display:grid; grid-template-columns:6.5em 1fr; gap:5px 16px; margin:0 0 16px; font-size:17px}
@@ -196,7 +223,7 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
 /* ---------- 印刷 ---------- */
 @media print{
   body{font-size:11pt; padding:0}
-  .bar,.tools,footer .noprint{display:none}
+  .bar,.tools,footer .noprint,.copy{display:none}
   .ev{break-inside:avoid; border:1px solid #999; border-left-width:5px; margin:8px 0}
   details{display:block}
   details .body{display:block !important}
@@ -290,6 +317,8 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
 </footer>
 
 </div>
+
+<div id="toast" role="status" aria-live="polite"></div>
 
 <script>
 /* ==============================================================
@@ -427,6 +456,7 @@ function buildEvent(r){
     year: (r["年度"] || String(fiscalYear(start))).trim(),
     start, end, spare, due, last, isAichi, state, label,
     openDate, openUndecided,
+    customId: String(r["リンクID"] || "").trim(),
     name:   r["大会名"] || "（大会名未設定）",
     place:  r["会場"] || "",
     kind:   r["種目"] || "",
@@ -493,11 +523,13 @@ function cardAichi(e){
     (e.state === "done" && e.youkou) ? `<a href="${e.youkou}">要項</a>` : "",
   ].filter(Boolean).join("");
 
-  return `<li class="ev${fin}" data-k="a" data-y="${esc(e.year)}">
+  return `<li class="ev${fin}" id="${esc(e.linkId)}" data-k="a" data-y="${esc(e.year)}">
     <div class="top">
       <span class="tag a">愛知</span>
       <span class="date">${fmtRange(e.start, e.end)}</span>
       <span class="badge ${e.state}">${e.label}</span>
+      <button class="copy" data-id="${esc(e.linkId)}" type="button"
+        title="この大会へのリンクをコピー" aria-label="この大会へのリンクをコピー">🔗</button>
     </div>
     <p class="name">${esc(e.name)}</p>
     ${e.memo ? `<p class="memo">${esc(e.memo)}</p>` : ""}
@@ -521,11 +553,13 @@ function cardOther(e){
   if (e.youkou) bits.push(`<a href="${e.youkou}">要項</a>`);
   if (e.state === "done" && e.result) bits.push(`<a href="${e.result}">結果</a>`);
 
-  return `<li class="ev other${fin}" data-k="o" data-y="${esc(e.year)}">
+  return `<li class="ev other${fin}" id="${esc(e.linkId)}" data-k="o" data-y="${esc(e.year)}">
     <div class="top">
       <span class="tag o">他県</span>
       <span class="date">${fmtRange(e.start, e.end)}</span>
       <span class="badge ${e.state}">${e.label}</span>
+      <button class="copy" data-id="${esc(e.linkId)}" type="button"
+        title="この大会へのリンクをコピー" aria-label="この大会へのリンクをコピー">🔗</button>
     </div>
     <p class="name">${esc(e.name)}</p>
     <p class="place">${esc(e.place)}${e.kind ? `　／　${esc(e.kind)}` : ""}${bits.length ? "　" + bits.join("　") : ""}</p>
@@ -558,6 +592,66 @@ function render(events, year){
   document.getElementById("alerts").innerHTML = alerts.map(e =>
     `<div class="alert"><span class="lbl">お知らせ</span><p>${esc(e.name)}：${esc(e.memo)}</p></div>`
   ).join("");
+}
+
+/* ============================================================
+   カードのID（リンク先）を決める
+   シートに「リンクID」列があればそれを使い、無ければ
+   開催日から t20261014 のように作ります。同じ日に複数あれば -1 -2 を付けます。
+   ============================================================ */
+function assignIds(events){
+  const byDay = {};
+  events.forEach(e => {
+    const k = `${e.start.getFullYear()}`
+            + `${String(e.start.getMonth() + 1).padStart(2, "0")}`
+            + `${String(e.start.getDate()).padStart(2, "0")}`;
+    (byDay[k] = byDay[k] || []).push(e);
+  });
+  Object.keys(byDay).forEach(k => {
+    // 大会名の順に番号を振る（行の並べ替えでIDが変わらないように）
+    const list = byDay[k].slice().sort((a, b) => a.name.localeCompare(b.name, "ja"));
+    list.forEach((e, i) => {
+      e.linkId = e.customId || (list.length > 1 ? `t${k}-${i + 1}` : `t${k}`);
+    });
+  });
+}
+
+/* リンクで開かれたときに、その大会まで動いて光らせる */
+function goToHash(){
+  const id = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: "smooth", block: "center" });
+  el.classList.remove("flash");
+  void el.offsetWidth;              // アニメーションをやり直させる
+  el.classList.add("flash");
+  setTimeout(() => el.classList.remove("flash"), 3000);
+}
+
+/* リンクをコピーする */
+function setupCopy(){
+  const toast = document.getElementById("toast");
+  const show = msg => {
+    toast.textContent = msg;
+    toast.classList.add("show");
+    setTimeout(() => toast.classList.remove("show"), 2200);
+  };
+
+  document.getElementById("list").addEventListener("click", ev => {
+    const btn = ev.target.closest(".copy");
+    if (!btn) return;
+    const url = location.origin + location.pathname + "#" + btn.dataset.id;
+    if (navigator.clipboard && window.isSecureContext){
+      navigator.clipboard.writeText(url)
+        .then(() => show("この大会へのリンクをコピーしました"))
+        .catch(() => { location.hash = btn.dataset.id;
+                       show("アドレス欄のURLをコピーしてください"); });
+    } else {
+      location.hash = btn.dataset.id;
+      show("アドレス欄のURLをコピーしてください");
+    }
+  });
 }
 
 function applyFilter(){
@@ -604,16 +698,25 @@ async function main(){
   }
   statusEl.hidden = true;
 
+  assignIds(events);
+
   const years = [...new Set(events.map(e => e.year))].sort((a,b) => b.localeCompare(a));
   const cur = String(fiscalYear(new Date()));
   const sel = document.getElementById("yearSel");
   sel.innerHTML = years.map(y => `<option value="${esc(y)}">${esc(y)}年度</option>`).join("");
-  sel.value = years.includes(cur) ? cur : years[0];
+
+  // リンクで開かれた場合は、その大会がある年度を先に選ぶ
+  const hashId = decodeURIComponent((location.hash || "").replace(/^#/, ""));
+  const hit = hashId ? events.find(e => e.linkId === hashId) : null;
+  sel.value = hit ? hit.year : (years.includes(cur) ? cur : years[0]);
 
   sel.addEventListener("change", () => render(events, sel.value));
   document.getElementById("onlyAichi").addEventListener("change", applyFilter);
+  window.addEventListener("hashchange", goToHash);
 
   render(events, sel.value);
+  setupCopy();
+  setTimeout(goToHash, 60);
 
   if (notice){
     document.getElementById("alerts").insertAdjacentHTML(
