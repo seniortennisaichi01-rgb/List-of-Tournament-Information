@@ -114,14 +114,23 @@ dd.due b{color:var(--soon)}
 .btn{
   display:inline-flex; align-items:center; justify-content:center;
   min-height:52px; padding:10px 26px; border-radius:7px;
-  font-size:17px; font-weight:700; text-decoration:none;
+  font-size:17px; font-weight:700; text-decoration:none; text-align:center;
 }
 .btn.primary{background:var(--aichi); color:#fff}
 .btn.ghost{background:#fff; color:var(--aichi); border:2.5px solid var(--aichi)}
+.btn.gray{background:#fff; color:var(--other); border:2.5px solid var(--other)}
+
+/* 郵送・電話などの案内 */
+.postal{
+  margin:14px 0 0; padding:12px 16px; background:#fff;
+  border:1.5px solid var(--line); border-radius:6px; font-size:16px; line-height:1.7;
+}
+.postal .h{display:block; font-weight:700; color:var(--sub); font-size:14.5px; margin-bottom:2px}
+
 .links{margin:12px 0 0; font-size:16.5px}
 .links a{margin-right:20px; white-space:nowrap}
 
-/* --- 他県：1〜2行の軽い表示 --- */
+/* --- 他県：軽い表示 --- */
 .ev.other{
   border-left:5px solid var(--other); background:var(--other-bg);
   border-radius:0 7px 7px 0; padding:14px 20px; margin:12px 0 12px 30px;
@@ -130,6 +139,7 @@ dd.due b{color:var(--soon)}
 .ev.other .name{font-size:18px; margin:3px 0 5px}
 .ev.other .place{margin:0; font-size:16px; color:var(--sub)}
 .ev.other .place a{color:var(--other)}
+.ev.other .postal{font-size:15px; padding:10px 13px; margin-top:10px}
 
 /* --- 終了 --- */
 .ev.fin{background:#FAFAFA; border-left-color:#C4C9D0}
@@ -222,10 +232,10 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
       <ol>
         <li><b>使用球</b>：各大会の要項に記載の指定球を使用します。</li>
         <li><b>表彰</b>：各種目の優勝・準優勝を表彰します。</li>
-        <li><b>申込方法</b>：Webの申込フォーム、またはハガキで受け付けます。</li>
+        <li><b>申込方法</b>：大会により、Webフォーム・申込書の郵送・お電話のいずれかとなります。各大会の欄をご確認ください。</li>
+        <li><b>参加費</b>：大会当日、会場でお支払いください。</li>
         <li><b>雨天等の判断</b>：当日の朝に判断し、本ページに掲載します。</li>
         <li><b>傷害・事故</b>：応急処置は行いますが、以降の責任は負いかねます。各自で保険への加入をお願いします。</li>
-        <li><b>その他</b>：詳細は各大会の要項をご確認ください。</li>
         <li><b>問い合わせ</b>：下記の事務局までお願いします。</li>
       </ol>
       <!-- ▲▲ ここまで ▲▲ -->
@@ -255,24 +265,24 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
 const CONFIG = {
   // スプレッドシートを「ウェブに公開 → カンマ区切り形式(.csv)」にして得たURLを貼る。
   // 空のままでも、下のサンプルデータで動作します。
-  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvl8FXBy2-pDY0oevurD9AOet1eikqA5qOGXxzfVwPXfeBHG1oW3DAAYWqysneZezfZhLhWEzFaqeK/pub?gid=0&single=true&output=csv",
+  CSV_URL: "",
 };
 
 /* ==============================================================
    サンプルデータ（CSV_URLが空のときに使われます）
    ============================================================== */
-const SAMPLE_CSV = `年度,開催日,終了日,予備日,区分,大会名,会場,種目,申込締切,要項URL,申込URL,出場者URL,結果URL,お知らせ,掲載
-2026,2026/4/6,,,愛知,第25回 お花見オープンテニス大会（シングルス）,名城庭球場（名古屋市）,男女シングルス,,,,,https://example.com/result,,公開
-2026,2026/4/21,,,愛知,第25回 お花見オープンテニス大会（ダブルス）,名城庭球場（名古屋市）,男女ダブルス,,,,,https://example.com/result,4月7日から4月21日に延期して開催しました,公開
-2026,2026/5/8,,2026/5/15,愛知,第22回 近県対抗チーム戦 山崎喜一郎杯 愛知県予選大会,一宮市テニス場,女子ダブルス・男子ダブルス・ミックス（計5種目）,2026/4/24,https://example.com/youkou,,,https://example.com/result,上位2チームが本戦（長野・松本）へ出場します,公開
-2026,2026/6/11,,2026/6/18,愛知,第17回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/5/27,https://example.com/youkou,,https://example.com/list,https://example.com/result,,公開
-2026,2026/6/24,2026/6/25,,他県,第22回 近県対抗チーム戦 山崎喜一郎杯 本戦,やまびこドーム（長野県松本市）,チーム戦（1泊2日）,,https://example.com/youkou,,,https://example.com/result,,公開
-2026,2026/8/27,,,愛知,［見本］第○回 愛知県部会 サマーダブルス大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/8/13,https://example.com/youkou,https://example.com/apply,,,,公開
-2026,2026/9/17,,,愛知,［見本］第○回 愛知県部会 秋季シングルス大会,名城庭球場（名古屋市）,男女シングルス,2026/9/3,https://example.com/youkou,https://example.com/apply,,,,公開
-2026,2026/10/8,2026/10/9,,他県,［見本］東海地区シニアテニス選手権,岐阜メモリアルセンター,男女ダブルス,2026/9/25,https://example.com/youkou,https://example.com/apply,,,,公開
-2026,2026/11/5,,2026/11/12,愛知,［見本］第○回 愛知県部会 ミックスダブルス大会,一宮市テニス場,ミックスダブルス（年齢区分別）,2026/10/22,https://example.com/youkou,https://example.com/apply,,,,公開
-2025,2025/4/7,,,愛知,第24回 お花見オープンテニス大会,名城庭球場（名古屋市）,男女シングルス・ダブルス,,,,,https://example.com/result,,公開
-2025,2025/6/12,,,愛知,第16回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,,,,,https://example.com/result,,公開`;
+const SAMPLE_CSV = `年度,開催日,終了日,予備日,区分,大会名,会場,種目,申込締切,申込方法,要項URL,申込書URL,申込URL,申込先メモ,出場者URL,結果URL,お知らせ,掲載
+2026,2026/4/6,,,愛知,第25回 お花見オープンテニス大会（シングルス）,名城庭球場（名古屋市）,男女シングルス,,Web,,,,,,https://example.com/result,,公開
+2026,2026/4/21,,,愛知,第25回 お花見オープンテニス大会（ダブルス）,名城庭球場（名古屋市）,男女ダブルス,,Web,,,,,,https://example.com/result,4月7日から4月21日に延期して開催しました,公開
+2026,2026/5/8,,2026/5/15,愛知,第22回 近県対抗チーム戦 山崎喜一郎杯 愛知県予選大会,一宮市テニス場,女子ダブルス・男子ダブルス・ミックス（計5種目）,2026/4/24,Web,https://example.com/youkou.pdf,,,,,https://example.com/result,上位2チームが本戦（長野・松本）へ出場します,公開
+2026,2026/6/11,,2026/6/18,愛知,第17回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/5/27,Web,https://example.com/youkou.pdf,,,,https://example.com/list,https://example.com/result,,公開
+2026,2026/6/24,2026/6/25,,他県,第22回 近県対抗チーム戦 山崎喜一郎杯 本戦,やまびこドーム（長野県松本市）,チーム戦（1泊2日）,,他県サイト,,,https://example.com/nagano,,,https://example.com/result,,公開
+2026,2026/8/27,,,愛知,［見本］第○回 愛知県部会 サマーダブルス大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/8/13,Web,https://example.com/youkou.pdf,,https://example.com/apply,,,,,公開
+2026,2026/9/17,,,愛知,［見本］第○回 愛知県部会 秋季シングルス大会,名城庭球場（名古屋市）,男女シングルス,2026/9/3,Web・郵送,https://example.com/youkou.pdf,https://example.com/moushikomi.pdf,https://example.com/apply,"郵送でもお申込みいただけます。〒460-0000 名古屋市○○区○○1-2-3 愛知県シニアテニス部会 事務局 宛（締切日消印有効）",,,,公開
+2026,2026/10/8,2026/10/9,,他県,［見本］東海地区シニアテニス選手権,岐阜メモリアルセンター,男女ダブルス,2026/9/25,他県サイト,,,https://example.com/gifu,"申込方法は主催者ページをご確認ください。お電話でも受け付けているとのことです（058-000-0000）。",,,,公開
+2026,2026/11/5,,2026/11/12,愛知,［見本］第○回 愛知県部会 ミックスダブルス大会,一宮市テニス場,ミックスダブルス（年齢区分別）,2026/10/22,郵送・電話,https://example.com/youkou.pdf,https://example.com/moushikomi.pdf,,"申込書にご記入のうえ郵送、またはお電話でお申込みください。〒460-0000 名古屋市○○区○○1-2-3 事務局 宛／電話 052-000-0000（平日9時〜17時）",,,,公開
+2025,2025/4/7,,,愛知,第24回 お花見オープンテニス大会,名城庭球場（名古屋市）,男女シングルス・ダブルス,,Web,,,,,,https://example.com/result,,公開
+2025,2025/6/12,,,愛知,第16回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,,Web,,,,,,https://example.com/result,,公開`;
 
 /* ============================== ユーティリティ ============================== */
 
@@ -328,7 +338,6 @@ function fmtRange(s, e){
   if (s.getMonth() === e.getMonth()) return `${fmtDate(s)}〜${e.getDate()}日(${WD[e.getDay()]})`;
   return `${fmtDate(s)}〜${fmtDate(e)}`;
 }
-// 年度（4月始まり）
 function fiscalYear(d){ return d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1; }
 
 function esc(s){
@@ -340,6 +349,10 @@ function esc(s){
 function safeUrl(u){
   u = String(u || "").trim();
   return /^https?:\/\//i.test(u) ? u : "";
+}
+// 申込先メモの中の電話番号をリンクにする
+function linkTel(html){
+  return html.replace(/(0\d{1,4}-\d{1,4}-\d{3,4})/g, '<a href="tel:$1">$1</a>');
 }
 
 /* ============================== 大会データの整形 ============================== */
@@ -355,7 +368,6 @@ function buildEvent(r){
   const last = end || start;
   const isAichi = !/他県|県外/.test(r["区分"] || "愛知");
 
-  // 状態を自動判定
   let state, label;
   if (dayDiff(last, TODAY) < 0){
     state = "done"; label = "終了";
@@ -372,13 +384,16 @@ function buildEvent(r){
   return {
     year: (r["年度"] || String(fiscalYear(start))).trim(),
     start, end, spare, due, last, isAichi, state, label,
-    name: r["大会名"] || "（大会名未設定）",
-    place: r["会場"] || "",
-    kind: r["種目"] || "",
-    memo: r["お知らせ"] || "",
+    name:   r["大会名"] || "（大会名未設定）",
+    place:  r["会場"] || "",
+    kind:   r["種目"] || "",
+    method: r["申込方法"] || "",
+    memo:   r["お知らせ"] || "",
+    note:   r["申込先メモ"] || "",
     youkou: safeUrl(r["要項URL"]),
-    apply: safeUrl(r["申込URL"]),
-    entry: safeUrl(r["出場者URL"]),
+    doc:    safeUrl(r["申込書URL"]),
+    apply:  safeUrl(r["申込URL"]),
+    entry:  safeUrl(r["出場者URL"]),
     result: safeUrl(r["結果URL"]),
     daysLeft: due ? dayDiff(due, TODAY) : null,
   };
@@ -386,24 +401,39 @@ function buildEvent(r){
 
 /* ============================== 描画 ============================== */
 
+// 受付中の大会に出す申込ボタン群
+function applyButtons(e){
+  const open = (e.state === "open" || e.state === "soon" || e.state === "plan");
+  if (!open) return "";
+  const b = [];
+  if (e.apply)  b.push(`<a class="btn primary" href="${e.apply}">Webで申し込む</a>`);
+  if (e.doc)    b.push(`<a class="btn ghost" href="${e.doc}">申込書をダウンロード</a>`);
+  if (e.youkou) b.push(`<a class="btn ghost" href="${e.youkou}">要項を見る</a>`);
+  return b.length ? `<div class="btns">${b.join("")}</div>` : "";
+}
+
+// 郵送・電話などの案内
+function postalBox(e){
+  if (!e.note) return "";
+  if (e.state === "done" || e.state === "closed") return "";
+  return `<p class="postal"><span class="h">郵送・お電話でのお申込み</span>${linkTel(esc(e.note))}</p>`;
+}
+
 function cardAichi(e){
   const fin = e.state === "done" ? " fin" : "";
   let due = "";
-  if (e.due && e.state !== "done"){   // 終了した大会に締切は不要
+  if (e.due && e.state !== "done"){
     const note = (e.state === "soon") ? ` <b>あと${e.daysLeft}日</b>` : "";
     due = `<dt>申込締切</dt><dd class="due">${fmtDate(e.due)}${note}</dd>`;
   }
+  const method = (e.method && e.state !== "done")
+    ? `<dt>申込方法</dt><dd>${esc(e.method)}</dd>` : "";
+
   const links = [
     e.entry  ? `<a href="${e.entry}">出場者リスト</a>` : "",
     e.result ? `<a href="${e.result}">結果</a>` : "",
     (e.state === "done" && e.youkou) ? `<a href="${e.youkou}">要項</a>` : "",
   ].filter(Boolean).join("");
-
-  const btns = (e.state === "open" || e.state === "soon" || e.state === "plan")
-    ? `<div class="btns">
-         ${e.apply  ? `<a class="btn primary" href="${e.apply}">申し込む</a>` : ""}
-         ${e.youkou ? `<a class="btn ghost" href="${e.youkou}">要項を見る</a>` : ""}
-       </div>` : "";
 
   return `<li class="ev${fin}" data-k="a" data-y="${esc(e.year)}">
     <div class="top">
@@ -417,16 +447,22 @@ function cardAichi(e){
       ${e.place ? `<dt>会場</dt><dd>${esc(e.place)}${e.spare ? `（予備日 ${fmtDate(e.spare)}）` : ""}</dd>` : ""}
       ${e.kind  ? `<dt>種目</dt><dd>${esc(e.kind)}</dd>` : ""}
       ${due}
+      ${method}
     </dl>
-    ${btns}
+    ${applyButtons(e)}
+    ${postalBox(e)}
     ${links ? `<p class="links">${links}</p>` : ""}
   </li>`;
 }
 
 function cardOther(e){
   const fin = e.state === "done" ? " fin" : "";
-  const link = e.apply || e.youkou || e.result;
-  const linkLabel = e.state === "done" ? "結果・詳細" : "詳しく見る";
+  const bits = [];
+  if (e.apply)  bits.push(`<a href="${e.apply}">主催者ページへ →</a>`);
+  if (e.doc)    bits.push(`<a href="${e.doc}">申込書</a>`);
+  if (e.youkou) bits.push(`<a href="${e.youkou}">要項</a>`);
+  if (e.state === "done" && e.result) bits.push(`<a href="${e.result}">結果</a>`);
+
   return `<li class="ev other${fin}" data-k="o" data-y="${esc(e.year)}">
     <div class="top">
       <span class="tag o">他県</span>
@@ -434,7 +470,8 @@ function cardOther(e){
       <span class="badge ${e.state}">${e.label}</span>
     </div>
     <p class="name">${esc(e.name)}</p>
-    <p class="place">${esc(e.place)}${e.kind ? `　／　${esc(e.kind)}` : ""}${link ? `　<a href="${link}">${linkLabel} →</a>` : ""}</p>
+    <p class="place">${esc(e.place)}${e.kind ? `　／　${esc(e.kind)}` : ""}${bits.length ? "　" + bits.join("　") : ""}</p>
+    ${postalBox(e)}
   </li>`;
 }
 
@@ -459,7 +496,6 @@ function render(events, year){
   list.hidden = false;
   applyFilter();
 
-  // お知らせ帯：これから開催の大会のうち、お知らせがあるものだけ
   const alerts = upcoming.filter(e => e.memo);
   document.getElementById("alerts").innerHTML = alerts.map(e =>
     `<div class="alert"><span class="lbl">お知らせ</span><p>${esc(e.name)}：${esc(e.memo)}</p></div>`
@@ -502,7 +538,6 @@ async function main(){
   }
   statusEl.hidden = true;
 
-  // 年度セレクタ
   const years = [...new Set(events.map(e => e.year))].sort((a,b) => b.localeCompare(a));
   const cur = String(fiscalYear(new Date()));
   const sel = document.getElementById("yearSel");
