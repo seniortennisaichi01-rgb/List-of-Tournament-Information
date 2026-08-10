@@ -102,6 +102,7 @@ ul.list{list-style:none; margin:0; padding:0}
 .badge.closed{background:#E6E8EB; color:var(--closed)}
 .badge.done{background:#E6E8EB; color:var(--done)}
 .badge.plan{background:#fff; color:var(--aichi); border:2px solid var(--aichi)}
+.badge.before{background:#fff; color:var(--sub); border:2px solid #A9AFB8}
 
 .name{font-size:22px; font-weight:700; margin:0 0 12px; line-height:1.55}
 
@@ -234,14 +235,41 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
     <summary>申込・実施の共通要領</summary>
     <div class="body">
       <!-- ▼▼ ここは年に一度あるかどうかの更新なので、HTMLに直接書いています ▼▼ -->
+      <p>愛知県部会が主催する5大会（お花見オープン／近県対抗チーム戦 愛知県予選／合計年齢別予選／秋のお楽しみ／秋季シングル＆ミックスダブルス）の共通事項です。<br>
+      <b>三河支部お楽しみダブルスハンディキャップ大会</b>と<b>尾張支部会員親睦テニス大会</b>は各支部主催のため、この要領の対象外です。</p>
+
       <ol>
-        <li><b>使用球</b>：各大会の要項に記載の指定球を使用します。</li>
-        <li><b>表彰</b>：各種目の優勝・準優勝を表彰します。</li>
-        <li><b>申込方法</b>：大会により、Webフォーム・申込書の郵送・お電話のいずれかとなります。各大会の欄をご確認ください。</li>
-        <li><b>参加費</b>：大会当日、会場でお支払いください。</li>
-        <li><b>雨天等の判断</b>：当日の朝に判断し、本ページに掲載します。</li>
-        <li><b>傷害・事故</b>：応急処置は行いますが、以降の責任は負いかねます。各自で保険への加入をお願いします。</li>
-        <li><b>問い合わせ</b>：下記の事務局までお願いします。</li>
+        <li><b>使用球</b><br>
+          YONEXテニスボール TB-TPL4（ツアープラチナム）。変更がある場合は試合当日にご連絡します。</li>
+
+        <li><b>表彰等</b><br>
+          各大会とも、各種目の成績上位者に賞品、参加者全員に参加賞を贈呈します。</li>
+
+        <li><b>申込み方法</b><br>
+          ハガキ、またはスマホ・パソコンからの2通りがあります。<br>
+          ① ハガキの場合 … 大会申込書に必要事項を記入し、ハガキに貼って申込先（立松 宛）へ送付してください。<br>
+          ② スマホ・パソコンの場合 … WEB版申込書からお申込みください。</li>
+
+        <li><b>天候不順等</b><br>
+          試合前日の午後5時に決定します。実施の可否は愛知県部会ホームページとLINE版ホームページ（LINE公式アカウント）に掲載しますので、ご覧いただくか、担当者へお問い合わせください。</li>
+
+        <li><b>傷害等の対応</b><br>
+          大会期間中の傷害や盗難事故について、主催者は一切の責任を負いません。各自十分にご注意ください。健康保険証をご持参ください。</li>
+
+        <li><b>その他</b>
+          <ul>
+            <li>「新型コロナウイルス」感染に関する一切の責任を負いかねますので、参加者の責任において対応をお願いします。</li>
+            <li>「熱中症予防JTA公式テニストーナメント開催ガイドライン」に準じます。</li>
+            <li>動画撮影をされる方は、対戦相手の許可を得たうえで、各会場の本部にも許可を得てください。</li>
+            <li><b>主催者の権利について</b>：大会記録（戦績、報告、講評ほか）および大会期間中に主催者が撮影した動画・静止画について、その権利はすべて主催者に帰属することとします。また本連盟が認めた機関（新聞社、協賛会社、出版社、放送局ほか）が使用することがあります。</li>
+            <li><b>個人情報の取り扱いについて</b>：ご記載いただく個人情報につきましては、氏名（生年月日）・連絡先などについては、年齢基準の確認および大会に係る諸連絡に使用します。また氏名（生年月日）・所属・試合結果につきましては、本連盟各地区部会間の大会資料として使用させていただきます。さらに大会の記録として、本連盟の情報誌や記念誌等へ掲載させていただくこともあります。その他の個人情報につきましては、本人の同意を得ることなく第三者に提供いたしません。</li>
+            <li>他地区大会・練習会へのお申し込みは、日本シニアテニス連盟ホームページおよび機関紙『青春』からご確認ください。</li>
+          </ul>
+        </li>
+
+        <li><b>問い合わせ先</b><br>
+          庄原（事務局担当）／恒川（部会長）／立松（大会受付担当）<br>
+          スマホ・パソコンをお使いの方は、LINE版（公式アカウント）またはWeb版ホームページからもお問い合わせいただけます。</li>
       </ol>
       <!-- ▲▲ ここまで ▲▲ -->
     </div>
@@ -373,9 +401,18 @@ function buildEvent(r){
   const last = end || start;
   const isAichi = !/他県|県外/.test(r["区分"] || "愛知");
 
+  // 申込開始日：日付を入れると「◯月◯日 受付開始」、「未定」と書くと「受付開始前」
+  const openRaw = String(r["申込開始日"] || "").trim();
+  const openDate = toDate(openRaw);
+  const openUndecided = !openDate && /未定|未発表/.test(openRaw);
+  const notStarted = openDate ? dayDiff(openDate, TODAY) > 0 : openUndecided;
+
   let state, label;
   if (dayDiff(last, TODAY) < 0){
     state = "done"; label = "終了";
+  } else if (notStarted){
+    state = "before";
+    label = openDate ? `${openDate.getMonth() + 1}月${openDate.getDate()}日 受付開始` : "受付開始前";
   } else if (!due){
     state = "plan"; label = "開催予定";
   } else if (dayDiff(due, TODAY) < 0){
@@ -389,6 +426,7 @@ function buildEvent(r){
   return {
     year: (r["年度"] || String(fiscalYear(start))).trim(),
     start, end, spare, due, last, isAichi, state, label,
+    openDate, openUndecided,
     name:   r["大会名"] || "（大会名未設定）",
     place:  r["会場"] || "",
     kind:   r["種目"] || "",
@@ -406,14 +444,16 @@ function buildEvent(r){
 
 /* ============================== 描画 ============================== */
 
-// 受付中の大会に出す申込ボタン群
+// 申込ボタン群。受付開始前は「要項を見る」だけを出す
 function applyButtons(e){
-  const open = (e.state === "open" || e.state === "soon" || e.state === "plan");
-  if (!open) return "";
   const b = [];
-  if (e.apply)  b.push(`<a class="btn primary" href="${e.apply}">Webで申し込む</a>`);
-  if (e.doc)    b.push(`<a class="btn ghost" href="${e.doc}">申込書をダウンロード</a>`);
-  if (e.youkou) b.push(`<a class="btn ghost" href="${e.youkou}">要項を見る</a>`);
+  if (e.state === "before"){
+    if (e.youkou) b.push(`<a class="btn ghost" href="${e.youkou}">要項を見る</a>`);
+  } else if (e.state === "open" || e.state === "soon" || e.state === "plan"){
+    if (e.apply)  b.push(`<a class="btn primary" href="${e.apply}">Webで申し込む</a>`);
+    if (e.doc)    b.push(`<a class="btn ghost" href="${e.doc}">申込書をダウンロード</a>`);
+    if (e.youkou) b.push(`<a class="btn ghost" href="${e.youkou}">要項を見る</a>`);
+  }
   return b.length ? `<div class="btns">${b.join("")}</div>` : "";
 }
 
@@ -426,10 +466,22 @@ function postalBox(e){
 
 function cardAichi(e){
   const fin = e.state === "done" ? " fin" : "";
+  // 申込期間の表示。開始日がわかっていれば「9月1日 〜 10月15日」の形で出す
   let due = "";
-  if (e.due && e.state !== "done"){
+  if (e.state !== "done"){
     const note = (e.state === "soon") ? ` <b>あと${e.daysLeft}日</b>` : "";
-    due = `<dt>申込締切</dt><dd class="due">${fmtDate(e.due)}${note}</dd>`;
+    if (e.openDate && e.due){
+      due = `<dt>申込期間</dt><dd class="due">${fmtDate(e.openDate)} 〜 ${fmtDate(e.due)}${note}</dd>`;
+    } else if (e.openUndecided && e.due){
+      due = `<dt>申込開始</dt><dd>未定</dd>`
+          + `<dt>申込締切</dt><dd class="due">${fmtDate(e.due)}${note}</dd>`;
+    } else if (e.due){
+      due = `<dt>申込締切</dt><dd class="due">${fmtDate(e.due)}${note}</dd>`;
+    } else if (e.openDate){
+      due = `<dt>申込開始</dt><dd>${fmtDate(e.openDate)}</dd>`;
+    } else if (e.openUndecided){
+      due = `<dt>申込開始</dt><dd>未定</dd>`;
+    }
   }
   const method = (e.method && e.state !== "done")
     ? `<dt>申込方法</dt><dd>${esc(e.method)}</dd>` : "";
