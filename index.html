@@ -56,6 +56,11 @@ h1{font-size:30px; line-height:1.4; margin:0 0 6px; letter-spacing:.02em}
 }
 .alert .lbl{color:var(--alert); font-weight:700; flex:none}
 .alert p{margin:0}
+/* 動作確認用のお知らせ（本番では出ません） */
+.notice{
+  background:#FFF8E1; border-left:7px solid #B8860B; color:#5C4400;
+  padding:12px 18px; border-radius:0 5px 5px 0; margin-bottom:10px; font-size:15.5px;
+}
 
 /* ---------- 操作バー ---------- */
 .bar{
@@ -265,7 +270,7 @@ footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-
 const CONFIG = {
   // スプレッドシートを「ウェブに公開 → カンマ区切り形式(.csv)」にして得たURLを貼る。
   // 空のままでも、下のサンプルデータで動作します。
-  CSV_URL: "",
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvl8FXBy2-pDY0oevurD9AOet1eikqA5qOGXxzfVwPXfeBHG1oW3DAAYWqysneZezfZhLhWEzFaqeK/pub?gid=0&single=true&output=csv",
 };
 
 /* ==============================================================
@@ -430,7 +435,8 @@ function cardAichi(e){
     ? `<dt>申込方法</dt><dd>${esc(e.method)}</dd>` : "";
 
   const links = [
-    e.entry  ? `<a href="${e.entry}">出場者リスト</a>` : "",
+    // 出場者リストは個人情報を含むため、大会が終わったら自動でリンクを外す
+    (e.entry && e.state !== "done") ? `<a href="${e.entry}">出場者リスト</a>` : "",
     e.result ? `<a href="${e.result}">結果</a>` : "",
     (e.state === "done" && e.youkou) ? `<a href="${e.youkou}">要項</a>` : "",
   ].filter(Boolean).join("");
@@ -518,7 +524,15 @@ async function main(){
     `${t.getFullYear()}年${t.getMonth()+1}月${t.getDate()}日 現在の情報です`;
 
   let csv = SAMPLE_CSV;
-  if (CONFIG.CSV_URL){
+  let notice = "";
+
+  if (CONFIG.CSV_URL && location.protocol === "file:"){
+    // パソコンでファイルを直接開いた場合、ブラウザの安全上の制限でシートを読み込めません。
+    // 見た目を確認できるよう、内蔵のサンプルデータで表示します。
+    notice = "パソコンでファイルを直接開いているため、内蔵のサンプルで表示しています。"
+           + "GitHub Pages に置くと、スプレッドシートの内容が表示されます。";
+
+  } else if (CONFIG.CSV_URL){
     try {
       const res = await fetch(CONFIG.CSV_URL, { cache: "no-store" });
       if (!res.ok) throw new Error("HTTP " + res.status);
@@ -548,6 +562,11 @@ async function main(){
   document.getElementById("onlyAichi").addEventListener("change", applyFilter);
 
   render(events, sel.value);
+
+  if (notice){
+    document.getElementById("alerts").insertAdjacentHTML(
+      "afterbegin", `<div class="notice">${esc(notice)}</div>`);
+  }
 }
 
 main();
