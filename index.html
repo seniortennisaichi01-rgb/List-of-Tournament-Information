@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大会開催案内｜愛知県シニアテニス部会</title>
+<meta name="description" content="愛知県シニアテニス部会の大会開催案内。開催日順に大会情報と申込先をご案内します。">
+<style>
+/* ============================================================
+   配色。ここを変えるとサイト全体の色が変わります
+   ============================================================ */
+:root{
+  --aichi:#1A3D7C;          /* 愛知県大会のメインカラー（濃紺） */
+  --aichi-bg:#EEF3FB;       /* 愛知県大会カードの背景 */
+  --other:#5F6672;          /* 他県大会（グレー） */
+  --other-bg:#F5F6F7;
+  --open:#1B6E36;           /* 受付中 */
+  --soon:#A2470A;           /* 締切間近 */
+  --closed:#5F6672;         /* 申込終了 */
+  --done:#8A9099;           /* 終了 */
+  --alert:#A82018;          /* お知らせ帯 */
+  --alert-bg:#FCEDEC;
+  --ink:#1C2024;
+  --sub:#565D66;
+  --line:#D9DCE1;
+  --page:#FFFFFF;
+}
+
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; padding:0 18px 72px;
+  background:var(--page); color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic Medium","Yu Gothic",Meiryo,sans-serif;
+  font-size:18px;            /* シニア世代に配慮した基本サイズ */
+  line-height:1.8;
+  font-feature-settings:"palt";
+}
+.wrap{max-width:840px; margin:0 auto}
+a{color:var(--aichi)}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{
+  outline:3px solid #F2A93B; outline-offset:2px;
+}
+
+/* ---------- ヘッダー ---------- */
+header{padding:32px 0 0}
+h1{font-size:30px; line-height:1.4; margin:0 0 6px; letter-spacing:.02em}
+.asof{margin:0 0 26px; font-size:15px; color:var(--sub)}
+
+/* ---------- お知らせ帯 ---------- */
+#alerts{margin:0 0 26px}
+.alert{
+  display:flex; gap:12px; align-items:flex-start;
+  background:var(--alert-bg); border-left:7px solid var(--alert);
+  padding:14px 18px; border-radius:0 5px 5px 0; margin-bottom:10px;
+}
+.alert .lbl{color:var(--alert); font-weight:700; flex:none}
+.alert p{margin:0}
+
+/* ---------- 操作バー ---------- */
+.bar{
+  display:flex; flex-wrap:wrap; gap:14px 24px; align-items:center;
+  justify-content:space-between;
+  padding:14px 0; border-top:3px solid var(--ink); border-bottom:1px solid var(--line);
+}
+.legend{display:flex; gap:18px; align-items:center; font-size:16px; color:var(--sub)}
+.legend span{display:flex; gap:8px; align-items:center; white-space:nowrap}
+.sw{width:17px; height:17px; border-radius:3px; flex:none}
+.sw.a{background:var(--aichi)}
+.sw.o{background:var(--other)}
+.tools{display:flex; flex-wrap:wrap; gap:10px 20px; align-items:center; font-size:16px}
+.tools label{display:flex; gap:9px; align-items:center; cursor:pointer}
+.tools input[type=checkbox]{width:21px; height:21px; accent-color:var(--aichi)}
+.tools select{font-size:16px; padding:7px 10px; border:1.5px solid var(--line); border-radius:5px; background:#fff; font-family:inherit}
+
+/* ---------- 状態表示 ---------- */
+#status{padding:40px 0; text-align:center; color:var(--sub); font-size:17px}
+#status.err{color:var(--alert)}
+
+/* ---------- 大会カード ---------- */
+ul.list{list-style:none; margin:0; padding:0}
+
+.ev{
+  border-left:8px solid var(--aichi);
+  background:var(--aichi-bg);
+  border-radius:0 9px 9px 0;
+  padding:20px 22px; margin:18px 0;
+}
+.ev .top{display:flex; flex-wrap:wrap; gap:10px 12px; align-items:center; margin-bottom:8px}
+.tag{font-size:14px; font-weight:700; letter-spacing:.1em; padding:4px 12px; border-radius:4px; flex:none}
+.tag.a{background:var(--aichi); color:#fff}
+.tag.o{background:#fff; color:var(--other); border:2px solid var(--other)}
+.date{font-size:22px; font-weight:700; color:var(--aichi); flex:none; letter-spacing:.01em}
+.badge{font-size:14px; font-weight:700; padding:4px 12px; border-radius:999px; flex:none}
+.badge.open{background:var(--open); color:#fff}
+.badge.soon{background:var(--soon); color:#fff}
+.badge.closed{background:#E6E8EB; color:var(--closed)}
+.badge.done{background:#E6E8EB; color:var(--done)}
+.badge.plan{background:#fff; color:var(--aichi); border:2px solid var(--aichi)}
+
+.name{font-size:22px; font-weight:700; margin:0 0 12px; line-height:1.55}
+
+dl.meta{display:grid; grid-template-columns:6.5em 1fr; gap:5px 16px; margin:0 0 16px; font-size:17px}
+dl.meta dt{color:var(--sub); font-weight:400}
+dl.meta dd{margin:0}
+dd.due b{color:var(--soon)}
+
+.ev .memo{
+  margin:0 0 14px; padding:10px 14px; background:#fff;
+  border-left:4px solid var(--soon); border-radius:0 4px 4px 0; font-size:16px;
+}
+
+.btns{display:flex; flex-wrap:wrap; gap:12px}
+.btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:52px; padding:10px 26px; border-radius:7px;
+  font-size:17px; font-weight:700; text-decoration:none;
+}
+.btn.primary{background:var(--aichi); color:#fff}
+.btn.ghost{background:#fff; color:var(--aichi); border:2.5px solid var(--aichi)}
+.links{margin:12px 0 0; font-size:16.5px}
+.links a{margin-right:20px; white-space:nowrap}
+
+/* --- 他県：1〜2行の軽い表示 --- */
+.ev.other{
+  border-left:5px solid var(--other); background:var(--other-bg);
+  border-radius:0 7px 7px 0; padding:14px 20px; margin:12px 0 12px 30px;
+}
+.ev.other .date{font-size:17.5px; color:var(--other)}
+.ev.other .name{font-size:18px; margin:3px 0 5px}
+.ev.other .place{margin:0; font-size:16px; color:var(--sub)}
+.ev.other .place a{color:var(--other)}
+
+/* --- 終了 --- */
+.ev.fin{background:#FAFAFA; border-left-color:#C4C9D0}
+.ev.fin .date,.ev.fin .name{color:var(--sub)}
+.ev.fin .tag.a{background:#8A9099}
+
+/* ---------- 区切り ---------- */
+.divider{
+  display:flex; align-items:center; gap:16px;
+  margin:44px 0 10px; color:var(--sub); font-size:16px; font-weight:700;
+}
+.divider::before,.divider::after{content:""; flex:1; height:1px; background:var(--line)}
+
+/* ---------- 折りたたみ ---------- */
+.folds{margin-top:46px}
+details{border-top:1px solid var(--line)}
+.folds details:last-of-type{border-bottom:1px solid var(--line)}
+summary{
+  cursor:pointer; padding:18px 4px; font-size:19px; font-weight:700;
+  list-style:none; display:flex; justify-content:space-between; align-items:center; gap:16px;
+}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"＋"; color:var(--sub); font-weight:400; font-size:22px; flex:none}
+details[open] summary::after{content:"−"}
+details .body{padding:0 4px 24px}
+details .body>*:first-child{margin-top:0}
+details ol,details ul{padding-left:1.5em; margin:0}
+details li{margin-bottom:12px}
+
+/* ---------- フッター ---------- */
+footer{margin-top:44px; padding-top:22px; border-top:3px solid var(--ink); font-size:16px; color:var(--sub)}
+
+/* ---------- スマホ ---------- */
+@media (max-width:560px){
+  body{padding:0 14px 56px; font-size:17px}
+  h1{font-size:24px}
+  .ev{padding:16px 16px; border-left-width:7px}
+  .ev.other{margin-left:14px; padding:13px 15px}
+  .date{font-size:19px}
+  .name{font-size:19px}
+  dl.meta{grid-template-columns:1fr; gap:0 0; font-size:16px}
+  dl.meta dt{margin-top:8px; font-size:14.5px}
+  .btns{flex-direction:column}
+  .btn{width:100%}
+  .links a{display:block; margin:0 0 10px}
+}
+
+/* ---------- 印刷 ---------- */
+@media print{
+  body{font-size:11pt; padding:0}
+  .bar,.tools,footer .noprint{display:none}
+  .ev{break-inside:avoid; border:1px solid #999; border-left-width:5px; margin:8px 0}
+  details{display:block}
+  details .body{display:block !important}
+  summary::after{content:""}
+  .btn{border:1px solid #666; color:#000 !important; background:#fff !important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>大会開催案内</h1>
+  <p class="asof" id="asof"></p>
+</header>
+
+<div id="alerts"></div>
+
+<div class="bar">
+  <div class="legend">
+    <span><i class="sw a"></i>愛知県部会 主催</span>
+    <span><i class="sw o"></i>他県・近県</span>
+  </div>
+  <div class="tools">
+    <label><input type="checkbox" id="onlyAichi"> 愛知県の大会だけ表示</label>
+    <select id="yearSel" aria-label="年度を選ぶ"></select>
+  </div>
+</div>
+
+<p id="status">大会情報を読み込んでいます…</p>
+<ul class="list" id="list" hidden></ul>
+
+<div class="folds">
+
+  <details>
+    <summary>申込・実施の共通要領</summary>
+    <div class="body">
+      <!-- ▼▼ ここは年に一度あるかどうかの更新なので、HTMLに直接書いています ▼▼ -->
+      <ol>
+        <li><b>使用球</b>：各大会の要項に記載の指定球を使用します。</li>
+        <li><b>表彰</b>：各種目の優勝・準優勝を表彰します。</li>
+        <li><b>申込方法</b>：Webの申込フォーム、またはハガキで受け付けます。</li>
+        <li><b>雨天等の判断</b>：当日の朝に判断し、本ページに掲載します。</li>
+        <li><b>傷害・事故</b>：応急処置は行いますが、以降の責任は負いかねます。各自で保険への加入をお願いします。</li>
+        <li><b>その他</b>：詳細は各大会の要項をご確認ください。</li>
+        <li><b>問い合わせ</b>：下記の事務局までお願いします。</li>
+      </ol>
+      <!-- ▲▲ ここまで ▲▲ -->
+    </div>
+  </details>
+
+  <details>
+    <summary>過去年度の大会・結果</summary>
+    <div class="body">
+      <p style="margin:0">上の「年度」から過去の年度を選ぶと、その年度の大会と結果をご覧いただけます。</p>
+    </div>
+  </details>
+
+</div>
+
+<footer>
+  <p><b>お問い合わせ</b><br>愛知県シニアテニス部会 事務局</p>
+  <p class="noprint">このページは開催日順に自動で並び替わります。締切を過ぎた大会は自動的に下へ移動します。</p>
+</footer>
+
+</div>
+
+<script>
+/* ==============================================================
+   設定：ここだけ書き換えれば動きます
+   ============================================================== */
+const CONFIG = {
+  // スプレッドシートを「ウェブに公開 → カンマ区切り形式(.csv)」にして得たURLを貼る。
+  // 空のままでも、下のサンプルデータで動作します。
+  CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQvl8FXBy2-pDY0oevurD9AOet1eikqA5qOGXxzfVwPXfeBHG1oW3DAAYWqysneZezfZhLhWEzFaqeK/pub?gid=0&single=true&output=csv",
+};
+
+/* ==============================================================
+   サンプルデータ（CSV_URLが空のときに使われます）
+   ============================================================== */
+const SAMPLE_CSV = `年度,開催日,終了日,予備日,区分,大会名,会場,種目,申込締切,要項URL,申込URL,出場者URL,結果URL,お知らせ,掲載
+2026,2026/4/6,,,愛知,第25回 お花見オープンテニス大会（シングルス）,名城庭球場（名古屋市）,男女シングルス,,,,,https://example.com/result,,公開
+2026,2026/4/21,,,愛知,第25回 お花見オープンテニス大会（ダブルス）,名城庭球場（名古屋市）,男女ダブルス,,,,,https://example.com/result,4月7日から4月21日に延期して開催しました,公開
+2026,2026/5/8,,2026/5/15,愛知,第22回 近県対抗チーム戦 山崎喜一郎杯 愛知県予選大会,一宮市テニス場,女子ダブルス・男子ダブルス・ミックス（計5種目）,2026/4/24,https://example.com/youkou,,,https://example.com/result,上位2チームが本戦（長野・松本）へ出場します,公開
+2026,2026/6/11,,2026/6/18,愛知,第17回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/5/27,https://example.com/youkou,,https://example.com/list,https://example.com/result,,公開
+2026,2026/6/24,2026/6/25,,他県,第22回 近県対抗チーム戦 山崎喜一郎杯 本戦,やまびこドーム（長野県松本市）,チーム戦（1泊2日）,,https://example.com/youkou,,,https://example.com/result,,公開
+2026,2026/8/27,,,愛知,［見本］第○回 愛知県部会 サマーダブルス大会,一宮市テニス場,男女ダブルス（年齢区分別）,2026/8/13,https://example.com/youkou,https://example.com/apply,,,,公開
+2026,2026/9/17,,,愛知,［見本］第○回 愛知県部会 秋季シングルス大会,名城庭球場（名古屋市）,男女シングルス,2026/9/3,https://example.com/youkou,https://example.com/apply,,,,公開
+2026,2026/10/8,2026/10/9,,他県,［見本］東海地区シニアテニス選手権,岐阜メモリアルセンター,男女ダブルス,2026/9/25,https://example.com/youkou,https://example.com/apply,,,,公開
+2026,2026/11/5,,2026/11/12,愛知,［見本］第○回 愛知県部会 ミックスダブルス大会,一宮市テニス場,ミックスダブルス（年齢区分別）,2026/10/22,https://example.com/youkou,https://example.com/apply,,,,公開
+2025,2025/4/7,,,愛知,第24回 お花見オープンテニス大会,名城庭球場（名古屋市）,男女シングルス・ダブルス,,,,,https://example.com/result,,公開
+2025,2025/6/12,,,愛知,第16回 愛知県部会 合計年齢別予選大会,一宮市テニス場,男女ダブルス（年齢区分別）,,,,,https://example.com/result,,公開`;
+
+/* ============================== ユーティリティ ============================== */
+
+// CSV を配列に変換（引用符・改行入りセルに対応）
+function parseCSV(text){
+  const rows = []; let row = [], field = "", inQuote = false;
+  text = text.replace(/^﻿/, "");
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (inQuote){
+      if (c === '"'){
+        if (text[i+1] === '"'){ field += '"'; i++; } else { inQuote = false; }
+      } else field += c;
+    } else {
+      if (c === '"') inQuote = true;
+      else if (c === ","){ row.push(field); field = ""; }
+      else if (c === "\n"){ row.push(field); rows.push(row); row = []; field = ""; }
+      else if (c !== "\r") field += c;
+    }
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows.filter(r => r.some(v => String(v).trim() !== ""));
+}
+
+// 1行目を見出しとして、オブジェクトの配列にする
+function toObjects(rows){
+  if (!rows.length) return [];
+  const head = rows[0].map(h => h.trim());
+  return rows.slice(1).map(r => {
+    const o = {};
+    head.forEach((h, i) => { o[h] = (r[i] ?? "").trim(); });
+    return o;
+  });
+}
+
+// 日付文字列をDateに（2026/6/11・2026-06-11・2026年6月11日 に対応）
+function toDate(s){
+  if (!s) return null;
+  const m = String(s).match(/(\d{4})\D{1,2}(\d{1,2})\D{1,2}(\d{1,2})/);
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2]-1, +m[3]);
+  return isNaN(d) ? null : d;
+}
+
+const WD = ["日","月","火","水","木","金","土"];
+const midnight = d => new Date(d.getFullYear(), d.getMonth(), d.getDate());
+const TODAY = midnight(new Date());
+const dayDiff = (a, b) => Math.round((midnight(a) - midnight(b)) / 86400000);
+
+function fmtDate(d){ return `${d.getMonth()+1}月${d.getDate()}日(${WD[d.getDay()]})`; }
+function fmtRange(s, e){
+  if (!e || +e === +s) return fmtDate(s);
+  if (s.getMonth() === e.getMonth()) return `${fmtDate(s)}〜${e.getDate()}日(${WD[e.getDay()]})`;
+  return `${fmtDate(s)}〜${fmtDate(e)}`;
+}
+// 年度（4月始まり）
+function fiscalYear(d){ return d.getMonth() >= 3 ? d.getFullYear() : d.getFullYear() - 1; }
+
+function esc(s){
+  return String(s).replace(/[&<>"']/g, c => (
+    {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]
+  ));
+}
+// 外部リンクだけを許可（javascript: などを弾く）
+function safeUrl(u){
+  u = String(u || "").trim();
+  return /^https?:\/\//i.test(u) ? u : "";
+}
+
+/* ============================== 大会データの整形 ============================== */
+
+function buildEvent(r){
+  const start = toDate(r["開催日"]);
+  if (!start) return null;
+  if ((r["掲載"] || "公開").trim() === "非公開") return null;
+
+  const end = toDate(r["終了日"]);
+  const spare = toDate(r["予備日"]);
+  const due = toDate(r["申込締切"]);
+  const last = end || start;
+  const isAichi = !/他県|県外/.test(r["区分"] || "愛知");
+
+  // 状態を自動判定
+  let state, label;
+  if (dayDiff(last, TODAY) < 0){
+    state = "done"; label = "終了";
+  } else if (!due){
+    state = "plan"; label = "開催予定";
+  } else if (dayDiff(due, TODAY) < 0){
+    state = "closed"; label = "申込終了";
+  } else if (dayDiff(due, TODAY) <= 7){
+    state = "soon"; label = "締切間近";
+  } else {
+    state = "open"; label = "受付中";
+  }
+
+  return {
+    year: (r["年度"] || String(fiscalYear(start))).trim(),
+    start, end, spare, due, last, isAichi, state, label,
+    name: r["大会名"] || "（大会名未設定）",
+    place: r["会場"] || "",
+    kind: r["種目"] || "",
+    memo: r["お知らせ"] || "",
+    youkou: safeUrl(r["要項URL"]),
+    apply: safeUrl(r["申込URL"]),
+    entry: safeUrl(r["出場者URL"]),
+    result: safeUrl(r["結果URL"]),
+    daysLeft: due ? dayDiff(due, TODAY) : null,
+  };
+}
+
+/* ============================== 描画 ============================== */
+
+function cardAichi(e){
+  const fin = e.state === "done" ? " fin" : "";
+  let due = "";
+  if (e.due && e.state !== "done"){   // 終了した大会に締切は不要
+    const note = (e.state === "soon") ? ` <b>あと${e.daysLeft}日</b>` : "";
+    due = `<dt>申込締切</dt><dd class="due">${fmtDate(e.due)}${note}</dd>`;
+  }
+  const links = [
+    e.entry  ? `<a href="${e.entry}">出場者リスト</a>` : "",
+    e.result ? `<a href="${e.result}">結果</a>` : "",
+    (e.state === "done" && e.youkou) ? `<a href="${e.youkou}">要項</a>` : "",
+  ].filter(Boolean).join("");
+
+  const btns = (e.state === "open" || e.state === "soon" || e.state === "plan")
+    ? `<div class="btns">
+         ${e.apply  ? `<a class="btn primary" href="${e.apply}">申し込む</a>` : ""}
+         ${e.youkou ? `<a class="btn ghost" href="${e.youkou}">要項を見る</a>` : ""}
+       </div>` : "";
+
+  return `<li class="ev${fin}" data-k="a" data-y="${esc(e.year)}">
+    <div class="top">
+      <span class="tag a">愛知</span>
+      <span class="date">${fmtRange(e.start, e.end)}</span>
+      <span class="badge ${e.state}">${e.label}</span>
+    </div>
+    <p class="name">${esc(e.name)}</p>
+    ${e.memo ? `<p class="memo">${esc(e.memo)}</p>` : ""}
+    <dl class="meta">
+      ${e.place ? `<dt>会場</dt><dd>${esc(e.place)}${e.spare ? `（予備日 ${fmtDate(e.spare)}）` : ""}</dd>` : ""}
+      ${e.kind  ? `<dt>種目</dt><dd>${esc(e.kind)}</dd>` : ""}
+      ${due}
+    </dl>
+    ${btns}
+    ${links ? `<p class="links">${links}</p>` : ""}
+  </li>`;
+}
+
+function cardOther(e){
+  const fin = e.state === "done" ? " fin" : "";
+  const link = e.apply || e.youkou || e.result;
+  const linkLabel = e.state === "done" ? "結果・詳細" : "詳しく見る";
+  return `<li class="ev other${fin}" data-k="o" data-y="${esc(e.year)}">
+    <div class="top">
+      <span class="tag o">他県</span>
+      <span class="date">${fmtRange(e.start, e.end)}</span>
+      <span class="badge ${e.state}">${e.label}</span>
+    </div>
+    <p class="name">${esc(e.name)}</p>
+    <p class="place">${esc(e.place)}${e.kind ? `　／　${esc(e.kind)}` : ""}${link ? `　<a href="${link}">${linkLabel} →</a>` : ""}</p>
+  </li>`;
+}
+
+function render(events, year){
+  const list = document.getElementById("list");
+  const rows = events.filter(e => e.year === year);
+
+  const upcoming = rows.filter(e => e.state !== "done").sort((a,b) => a.start - b.start);
+  const finished = rows.filter(e => e.state === "done").sort((a,b) => b.start - a.start);
+
+  const html = [];
+  if (!upcoming.length && finished.length){
+    html.push(`<p style="color:var(--sub);margin:26px 0 0">この年度の大会はすべて終了しました。</p>`);
+  }
+  upcoming.forEach(e => html.push(e.isAichi ? cardAichi(e) : cardOther(e)));
+  if (upcoming.length && finished.length){
+    html.push(`<div class="divider">ここから下は終了した大会</div>`);
+  }
+  finished.forEach(e => html.push(e.isAichi ? cardAichi(e) : cardOther(e)));
+
+  list.innerHTML = html.join("") || `<p style="color:var(--sub)">掲載中の大会はありません。</p>`;
+  list.hidden = false;
+  applyFilter();
+
+  // お知らせ帯：これから開催の大会のうち、お知らせがあるものだけ
+  const alerts = upcoming.filter(e => e.memo);
+  document.getElementById("alerts").innerHTML = alerts.map(e =>
+    `<div class="alert"><span class="lbl">お知らせ</span><p>${esc(e.name)}：${esc(e.memo)}</p></div>`
+  ).join("");
+}
+
+function applyFilter(){
+  const on = document.getElementById("onlyAichi").checked;
+  document.querySelectorAll('#list [data-k="o"]').forEach(el => {
+    el.style.display = on ? "none" : "";
+  });
+}
+
+/* ============================== 起動 ============================== */
+
+async function main(){
+  const statusEl = document.getElementById("status");
+  const t = new Date();
+  document.getElementById("asof").textContent =
+    `${t.getFullYear()}年${t.getMonth()+1}月${t.getDate()}日 現在の情報です`;
+
+  let csv = SAMPLE_CSV;
+  if (CONFIG.CSV_URL){
+    try {
+      const res = await fetch(CONFIG.CSV_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      csv = await res.text();
+    } catch (err) {
+      statusEl.className = "err";
+      statusEl.textContent = "大会情報を読み込めませんでした。しばらくしてから再度お試しください。";
+      console.error(err);
+      return;
+    }
+  }
+
+  const events = toObjects(parseCSV(csv)).map(buildEvent).filter(Boolean);
+  if (!events.length){
+    statusEl.textContent = "掲載中の大会はありません。";
+    return;
+  }
+  statusEl.hidden = true;
+
+  // 年度セレクタ
+  const years = [...new Set(events.map(e => e.year))].sort((a,b) => b.localeCompare(a));
+  const cur = String(fiscalYear(new Date()));
+  const sel = document.getElementById("yearSel");
+  sel.innerHTML = years.map(y => `<option value="${esc(y)}">${esc(y)}年度</option>`).join("");
+  sel.value = years.includes(cur) ? cur : years[0];
+
+  sel.addEventListener("change", () => render(events, sel.value));
+  document.getElementById("onlyAichi").addEventListener("change", applyFilter);
+
+  render(events, sel.value);
+}
+
+main();
+</script>
+</body>
+</html>
